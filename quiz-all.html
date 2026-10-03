@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>全冊總測驗｜高中歷史第二冊</title>
+<meta name="description" content="從全部題庫隨機抽題的東亞史綜合測驗，可自選範圍與題數。">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .picker{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow); margin:0 0 24px;
+  }
+  .picker h3{margin:0 0 10px; font-size:15px; letter-spacing:.08em; color:var(--ink-faint)}
+  .picker-row{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:16px}
+  .picker-row:last-of-type{margin-bottom:0}
+  .num{
+    border:1px solid var(--line); background:var(--surface-2); color:var(--ink);
+    padding:6px 12px; border-radius:8px; font:inherit; font-size:15px; width:84px;
+  }
+</style>
+</head>
+<body data-nav="qz">
+
+<main class="wrap page">
+
+  <section class="hero">
+    <p class="eyebrow">測驗工具</p>
+    <h1>全冊總測驗</h1>
+    <p class="lede">從全部 <strong id="bank-n">—</strong> 題的題庫中<strong>隨機抽題</strong>，可自選範圍與題數。每次重新產生的題目順序都不同，適合段考前反覆練習。</p>
+  </section>
+
+  <div class="picker">
+    <h3>選擇範圍</h3>
+    <div class="picker-row" id="scope-ch">
+      <span style="font-size:15px;color:var(--ink-soft);min-width:4.5em">篇章節</span>
+      <button class="chip on" type="button" data-k="ch0">導論</button>
+      <button class="chip on" type="button" data-k="ch1">第1章</button>
+      <button class="chip on" type="button" data-k="ch2">第2章</button>
+      <button class="chip on" type="button" data-k="ch3">第3章</button>
+      <button class="chip on" type="button" data-k="ch4">第4章</button>
+      <button class="chip on" type="button" data-k="ch5">第5章</button>
+      <button class="chip on" type="button" data-k="ch6">第6章</button>
+    </div>
+    <div class="picker-row" id="scope-co">
+      <span style="font-size:15px;color:var(--ink-soft);min-width:4.5em">各國</span>
+      <button class="chip on c-cn" type="button" data-k="cn">中國</button>
+      <button class="chip on c-jp" type="button" data-k="jp">日本</button>
+      <button class="chip on c-kr" type="button" data-k="kr">韓國</button>
+      <button class="chip on c-vn" type="button" data-k="vn">越南</button>
+      <button class="chip on c-ot" type="button" data-k="ot">東亞其他</button>
+    </div>
+    <div class="picker-row">
+      <span style="font-size:15px;color:var(--ink-soft);min-width:4.5em">題數</span>
+      <input class="num" id="count" type="number" min="5" max="120" step="5" value="25">
+      <button class="btn" type="button" id="go">產生測驗</button>
+      <button class="btn ghost" type="button" id="all">全選</button>
+      <button class="btn ghost" type="button" id="none">全不選</button>
+      <span class="tl-count" id="pool">—</span>
+    </div>
+  </div>
+
+  <div id="quiz"></div>
+
+  <nav class="pager">
+    <a href="timeline-country.html">← 分國大事年表</a>
+    <a href="index.html">回首頁 →</a>
+  </nav>
+
+</main>
+
+<footer class="site"><div class="wrap">楊梅高中歷史科　何友友老師教學網</div></footer>
+
+<script src="assets/site.js"></script>
+<script src="data/quiz-chapters.js"></script>
+<script src="data/quiz-countries.js"></script>
+<script>
+(function(){
+  var KEYS = ['ch0','ch1','ch2','ch3','ch4','ch5','ch6','cn','jp','kr','vn','ot'];
+  var chips = document.querySelectorAll('.picker .chip');
+  var poolEl = document.getElementById('pool');
+  var countEl = document.getElementById('count');
+
+  var bankTotal = KEYS.reduce(function(n,k){ return n + (EAH_QUIZ[k] || []).length; }, 0);
+  document.getElementById('bank-n').textContent = bankTotal;
+
+  function selected(){
+    var out = [];
+    Array.prototype.forEach.call(chips, function(c){
+      if (c.classList.contains('on')) out.push(c.getAttribute('data-k'));
+    });
+    return out;
+  }
+  function pool(){
+    var items = [];
+    selected().forEach(function(k){ items = items.concat(EAH_QUIZ[k] || []); });
+    return items;
+  }
+  function refresh(){
+    var n = pool().length;
+    poolEl.textContent = '可抽題庫 ' + n + ' 題';
+    countEl.max = Math.max(5, n);
+  }
+  Array.prototype.forEach.call(chips, function(c){
+    c.addEventListener('click', function(){ c.classList.toggle('on'); refresh(); });
+  });
+  document.getElementById('all').addEventListener('click', function(){
+    Array.prototype.forEach.call(chips, function(c){ c.classList.add('on'); }); refresh();
+  });
+  document.getElementById('none').addEventListener('click', function(){
+    Array.prototype.forEach.call(chips, function(c){ c.classList.remove('on'); }); refresh();
+  });
+
+  document.getElementById('go').addEventListener('click', function(){
+    var items = pool();
+    if (!items.length){
+      document.getElementById('quiz').className = 'card';
+      document.getElementById('quiz').innerHTML = '<p style="margin:0;color:var(--ink-faint)">請至少選擇一個範圍。</p>';
+      return;
+    }
+    var n = Math.max(1, Math.min(parseInt(countEl.value, 10) || 25, items.length));
+    EAH.quiz('quiz', {
+      title: '全冊總測驗',
+      subtitle: '隨機抽題，單選題，點選選項後立即顯示解析。按「產生測驗」可重新抽題。',
+      items: items, shuffle: true, limit: n
+    });
+    document.getElementById('quiz').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  refresh();
+})();
+</script>
+</body>
+</html>

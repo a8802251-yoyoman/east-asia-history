@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>分國大事年表｜高中歷史第二冊</title>
+<meta name="description" content="中國、日本、韓國、越南、東亞其他五條獨立年表，便於縱向比較。">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .tabs{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 22px}
+  .tab{
+    border:1px solid var(--line); background:var(--surface); color:var(--ink-soft);
+    padding:8px 20px; border-radius:999px; cursor:pointer; font:inherit; font-size:15.5px;
+  }
+  .tab:hover{border-color:var(--ink-faint)}
+  .tab.on{color:#fff}
+  .tab.on[data-c="cn"]{background:var(--cn); border-color:var(--cn)}
+  .tab.on[data-c="jp"]{background:var(--jp); border-color:var(--jp)}
+  .tab.on[data-c="kr"]{background:var(--kr); border-color:var(--kr)}
+  .tab.on[data-c="vn"]{background:var(--vn); border-color:var(--vn)}
+  .tab.on[data-c="ot"]{background:var(--ot); border-color:var(--ot)}
+  .panel[hidden]{display:none}
+  .panel-head{
+    border-left:4px solid var(--accent); padding:4px 0 4px 14px; margin:0 0 18px;
+  }
+  .panel-head h2{margin:0 0 4px; border:0; padding:0}
+  .panel-head p{margin:0; font-size:15px; color:var(--ink-soft)}
+  .panel[data-c="cn"] .panel-head{border-left-color:var(--cn)}
+  .panel[data-c="jp"] .panel-head{border-left-color:var(--jp)}
+  .panel[data-c="kr"] .panel-head{border-left-color:var(--kr)}
+  .panel[data-c="vn"] .panel-head{border-left-color:var(--vn)}
+  .panel[data-c="ot"] .panel-head{border-left-color:var(--ot)}
+  @media print{ .tabs{display:none} .panel[hidden]{display:block !important} }
+</style>
+</head>
+<body data-nav="tlc">
+
+<main class="wrap page">
+
+  <section class="hero">
+    <p class="eyebrow">年表工具</p>
+    <h1>分國大事年表</h1>
+    <p class="lede"><strong>依國家分開</strong>的五條年表，便於縱向追蹤單一國家的發展軌跡。想做跨國的共時性對照，請改用<a href="timeline.html">綜合年表</a>。</p>
+    <p class="lede" style="font-size:15px">註：同一事件若牽涉多國（如甲午戰爭、壬辰倭亂），會<strong>同時出現在相關各國的年表中</strong>，這是刻意的設計——同一件事對不同國家的意義並不相同。</p>
+  </section>
+
+  <div class="tabs" role="tablist">
+    <button class="tab on" type="button" data-c="cn">中國</button>
+    <button class="tab" type="button" data-c="jp">日本</button>
+    <button class="tab" type="button" data-c="kr">韓國</button>
+    <button class="tab" type="button" data-c="vn">越南</button>
+    <button class="tab" type="button" data-c="ot">東亞其他</button>
+  </div>
+
+  <section class="panel" data-c="cn">
+    <div class="panel-head"><h2>中國大事年表</h2><p>從封建郡縣、科舉律令、海禁白銀，到自強革命與改革開放。完整說明見<a href="country-china.html">中國</a>。</p></div>
+    <div id="tl-cn"></div>
+  </section>
+  <section class="panel" data-c="jp" hidden>
+    <div class="panel-head"><h2>日本大事年表</h2><p>從遣唐使、律令國家、公武二元、鎖國與蘭學，到明治維新、擴張與戰後。完整說明見<a href="country-japan.html">日本</a>。</p></div>
+    <div id="tl-jp"></div>
+  </section>
+  <section class="panel" data-c="kr" hidden>
+    <div class="panel-head"><h2>韓國（朝鮮半島）大事年表</h2><p>從漢四郡、三國統一、兩班性理學，到殖民、分斷與民主化。完整說明見<a href="country-korea.html">韓國</a>。</p></div>
+    <div id="tl-kr"></div>
+  </section>
+  <section class="panel" data-c="vn" hidden>
+    <div class="panel-head"><h2>越南大事年表</h2><p>從北屬、吳權獨立、內帝外臣，到法國殖民、抗法抗美與革新開放。完整說明見<a href="country-vietnam.html">越南</a>。</p></div>
+    <div id="tl-vn"></div>
+  </section>
+  <section class="panel" data-c="ot" hidden>
+    <div class="panel-head"><h2>東亞其他大事年表</h2><p>琉球、蒙古、渤海、南洋與歐洲勢力，以及當代區域組織。完整說明見<a href="country-other.html">東亞其他</a>。</p></div>
+    <div id="tl-ot"></div>
+  </section>
+
+  <nav class="pager">
+    <a href="timeline.html">← 綜合大事年表</a>
+    <a href="quiz-all.html">全冊總測驗 →</a>
+  </nav>
+
+</main>
+
+<footer class="site"><div class="wrap">楊梅高中歷史科　何友友老師教學網</div></footer>
+
+<script src="assets/site.js"></script>
+<script src="data/timeline.js"></script>
+<script>
+  ['cn','jp','kr','vn','ot'].forEach(function(c){
+    EAH.timeline('tl-' + c, EAH_TIMELINE, {country:c, filter:false});
+  });
+  var tabs = document.querySelectorAll('.tab');
+  var panels = document.querySelectorAll('.panel');
+  Array.prototype.forEach.call(tabs, function(t){
+    t.addEventListener('click', function(){
+      var c = t.getAttribute('data-c');
+      Array.prototype.forEach.call(tabs, function(x){ x.classList.toggle('on', x === t); });
+      Array.prototype.forEach.call(panels, function(p){ p.hidden = p.getAttribute('data-c') !== c; });
+    });
+  });
+</script>
+</body>
+</html>
